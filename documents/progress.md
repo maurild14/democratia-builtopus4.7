@@ -153,3 +153,4 @@
 - 2026-04-23 | claude | initial spec + docs scaffold
 - 2026-04-23 | claude | built entire codebase: monorepo, DB schema, auth, LLM, clustering, all app pages, API routes — clean build (27 routes)
 - 2026-04-24 | claude | hero redesign: capitol SVG full-width background, DEMOCRATIA title + tagline + pill CTA buttons overlaid; build clean
+- 2026-04-24 | claude | fix: tailwind.config.ts replaced require('@tailwindcss/typography') with ESM import (require not defined in ESM context)

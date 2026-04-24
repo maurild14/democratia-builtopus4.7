@@ -63,7 +63,11 @@ CREATE TABLE IF NOT EXISTS user_notification_prefs (
 
 -- Auto-create user profile on signup
 CREATE OR REPLACE FUNCTION handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 DECLARE
   v_pseudonym TEXT;
   v_zone_id UUID;
@@ -90,7 +94,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 CREATE OR REPLACE TRIGGER on_auth_user_created
 AFTER INSERT ON auth.users
