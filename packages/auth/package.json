@@ -1,0 +1,25 @@
+{
+  "name": "@democratia/auth",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts",
+    "./client": "./src/client.ts",
+    "./middleware": "./src/middleware.ts"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.48.1",
+    "@democratia/db": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "next": "^15.1.6"
+  }
+}

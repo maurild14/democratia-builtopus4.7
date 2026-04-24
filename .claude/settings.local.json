@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 \"C:\\\\Users\\\\mauri\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"civic democracy deliberation platform editorial broadsheet brutalist\" --design-system -p \"DemocratIA\" -f markdown)",
+      "Bash(python \"C:\\\\Users\\\\mauri\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"civic democracy deliberation platform editorial broadsheet brutalist\" --design-system -p \"DemocratIA\" -f markdown)",
+      "Bash(python \"C:\\\\Users\\\\mauri\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\src\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"civic democracy deliberation platform editorial broadsheet brutalist\" --design-system -p \"DemocratIA\" -f markdown)",
+      "Bash(pnpm --version)",
+      "Bash(npm install *)",
+      "Bash(pnpm install *)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm exec *)",
+      "Bash(python \"C:\\\\Users\\\\mauri\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"civic democracy landing page hero editorial minimalism\" --design-system -p \"DemocratIA\" -f markdown)",
+      "Bash(pnpm --filter web build)"
+    ]
+  }
+}

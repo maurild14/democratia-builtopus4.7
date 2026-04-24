@@ -1,0 +1,41 @@
+# dependencies
+node_modules
+.pnpm-store
+
+# Next.js
+.next
+out
+
+# turbo
+.turbo
+
+# build outputs
+dist
+build
+
+# env
+.env
+.env.local
+.env.*.local
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode
+.idea
+*.swp
+
+# test coverage
+coverage
+.nyc_output
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
