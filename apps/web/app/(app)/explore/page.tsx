@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, Globe, ChevronRight, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import { useDebounce } from '@/hooks/use-debounce';
+import { createClientSupabase } from '@democratia/auth/client';
 
 interface SearchResult {
   id: string;
@@ -19,12 +19,52 @@ interface SearchResult {
   forumId: string;
 }
 
+interface PilotCity {
+  name: string;
+  country: string;
+  forumId: string | null;
+}
+
+const PILOT_CITY_SLUGS = [
+  { slug: 'buenos-aires-caba', name: 'Buenos Aires (CABA)', country: 'Argentina' },
+  { slug: 'san-francisco',     name: 'San Francisco',       country: 'United States' },
+];
+
 export default function ExplorePage() {
   const router = useRouter();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
+  const [pilotCities, setPilotCities] = useState<PilotCity[]>(
+    PILOT_CITY_SLUGS.map((c) => ({ ...c, forumId: null }))
+  );
   const debouncedQuery = useDebounce(query, 300);
+
+  // Resolve real forum IDs for the pilot city quick links
+  useEffect(() => {
+    async function loadPilotCityForums() {
+      const supabase = createClientSupabase();
+      const slugs = PILOT_CITY_SLUGS.map((c) => c.slug);
+
+      const { data } = await supabase
+        .from('geo_zones')
+        .select('slug, forums(id)')
+        .in('slug', slugs);
+
+      if (!data) return;
+
+      setPilotCities(
+        PILOT_CITY_SLUGS.map((city) => {
+          const row = data.find((r) => r.slug === city.slug);
+          const forums = row?.forums;
+          const forumId = Array.isArray(forums) ? forums[0]?.id : (forums as { id: string } | null)?.id;
+          return { ...city, forumId: forumId ?? null };
+        })
+      );
+    }
+
+    void loadPilotCityForums();
+  }, []);
 
   const search = useCallback(async (q: string) => {
     if (!q.trim()) { setResults([]); return; }
@@ -35,8 +75,9 @@ export default function ExplorePage() {
     setLoading(false);
   }, []);
 
-  // Trigger search when debounced query changes
-  useState(() => { search(debouncedQuery); });
+  useEffect(() => {
+    void search(debouncedQuery);
+  }, [debouncedQuery, search]);
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -57,7 +98,6 @@ export default function ExplorePage() {
           <p className="text-xs text-muted-foreground">Global activity map — coming with geo data</p>
         </div>
 
-        {/* Mock activity dots */}
         {MOCK_DOTS.map((dot, i) => (
           <div
             key={i}
@@ -74,7 +114,7 @@ export default function ExplorePage() {
         <Input
           type="search"
           value={query}
-          onChange={(e) => { setQuery(e.target.value); search(e.target.value); }}
+          onChange={(e) => { setQuery(e.target.value); void search(e.target.value); }}
           placeholder="Search neighborhoods, cities, provinces..."
           className="pl-9 pr-4 h-12 text-base"
           aria-label="Search forums"
@@ -85,7 +125,7 @@ export default function ExplorePage() {
         )}
       </div>
 
-      {/* Results */}
+      {/* Search results */}
       {results.length > 0 && (
         <div className="space-y-2 mb-8">
           {results.map((result) => (
@@ -115,16 +155,17 @@ export default function ExplorePage() {
         <p className="text-sm text-muted-foreground text-center py-8">No forums found for &ldquo;{query}&rdquo;</p>
       )}
 
-      {/* Hierarchical browse */}
+      {/* Pilot city quick links */}
       {!query && (
         <div>
           <h2 className="text-lg font-semibold mb-4">Browse by Geography</h2>
           <div className="grid sm:grid-cols-2 gap-3">
-            {PILOT_CITIES.map((city) => (
+            {pilotCities.map((city) => (
               <button
                 key={city.name}
-                onClick={() => router.push(`/forum/${city.forumId}`)}
-                className="group text-left"
+                onClick={() => city.forumId && router.push(`/forum/${city.forumId}`)}
+                disabled={!city.forumId}
+                className="group text-left disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Card className="card-editorial p-5 hover:bg-accent/50 transition-colors">
                   <div className="flex items-center justify-between">
@@ -132,7 +173,10 @@ export default function ExplorePage() {
                       <p className="font-semibold">{city.name}</p>
                       <p className="text-xs text-muted-foreground mt-0.5">{city.country} · Pilot city</p>
                     </div>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    {city.forumId
+                      ? <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      : <Loader2 className="h-4 w-4 text-muted-foreground animate-spin" />
+                    }
                   </div>
                 </Card>
               </button>
@@ -148,9 +192,4 @@ const MOCK_DOTS = [
   { x: 20, y: 30 }, { x: 45, y: 45 }, { x: 70, y: 25 },
   { x: 30, y: 65 }, { x: 60, y: 55 }, { x: 80, y: 70 },
   { x: 15, y: 50 }, { x: 55, y: 20 }, { x: 85, y: 40 },
-];
-
-const PILOT_CITIES = [
-  { name: 'Buenos Aires (CABA)', country: 'Argentina', forumId: 'caba-forum-id' },
-  { name: 'San Francisco', country: 'United States', forumId: 'sf-forum-id' },
 ];

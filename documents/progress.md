@@ -14,7 +14,7 @@
 4. Record blockers in the `Blockers` section with the task ID, a one-line description, and what decision unblocks it.
 5. Update the `Last updated` date below on every commit to this file.
 
-**Last updated:** 2026-04-23
+**Last updated:** 2026-04-24
 
 ---
 
@@ -36,11 +36,13 @@
 - [x] Legal pages: Terms of Service, Privacy Policy
 - [x] `vercel.json` (radar cron every 6h, reports cron weekly), `.env.example`, `LICENSE`
 
+### Done
+- [x] Seed pipeline: `packages/geo/src/sources/caba.ts` + `sf.ts` (fetch real GeoJSON), `packages/db/src/seed.ts` (orchestrator), migration `008_seed_helpers.sql` (`upsert_geo_zone` RPC), `pnpm db:seed` root script
+
 ### Backlog
 - [ ] Configure Supabase project (dev + prod) — requires user to create project + set env vars
-- [ ] Run migrations against Supabase instance: `pnpm db:migrate`
-- [ ] Seed CABA (48 neighborhoods) via Buenos Aires Data GeoJSON
-- [ ] Seed San Francisco (49 neighborhoods) via DataSF GeoJSON
+- [ ] Run migrations against Supabase instance: `pnpm db:migrate` (includes 008_seed_helpers)
+- [ ] Run geo seed: `pnpm db:seed` (102 zones + 102 forums)
 - [ ] GitHub Actions CI: lint + type-check + test
 - [ ] README.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, issue templates
 - [ ] Publish repo publicly on GitHub

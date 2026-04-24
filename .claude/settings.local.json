@@ -10,7 +10,12 @@
       "Bash(pnpm add *)",
       "Bash(pnpm exec *)",
       "Bash(python \"C:\\\\Users\\\\mauri\\\\.claude\\\\plugins\\\\cache\\\\ui-ux-pro-max-skill\\\\ui-ux-pro-max\\\\2.5.0\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"civic democracy landing page hero editorial minimalism\" --design-system -p \"DemocratIA\" -f markdown)",
-      "Bash(pnpm --filter web build)"
+      "Bash(pnpm --filter web build)",
+      "Bash(node *)",
+      "Bash(node_modules/.bin/tsx --version)",
+      "Bash(node_modules/.bin/tsx --no-deprecation -e \"import\\('./packages/geo/src/index.ts'\\).then\\(m => console.log\\('geo exports:', Object.keys\\(m\\)\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
+      "Bash(node_modules/.bin/tsx --no-deprecation packages/geo/src/index.ts)",
+      "Bash(node_modules/.bin/tsx --no-deprecation -e ' *)"
     ]
   }
 }

@@ -7,12 +7,14 @@
   "scripts": {
     "type-check": "tsc --noEmit",
     "generate": "supabase gen types typescript --local > src/types/database.ts",
-    "migrate": "supabase db push"
+    "migrate": "supabase db push",
+    "seed": "tsx --env-file=../../.env.local src/seed.ts"
   },
   "devDependencies": {
     "typescript": "^5.7.3"
   },
   "dependencies": {
+    "@democratia/geo": "workspace:*",
     "@supabase/supabase-js": "^2.48.1"
   }
 }
