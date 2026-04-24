@@ -25,6 +25,8 @@ export function GeoSelector({ value, onChange }: Props) {
   const [neighborhoods, setNeighborhoods] = useState<GeoZone[]>([]);
   const [selection, setSelection] = useState<SelectionState>({ country: null, province: null, city: null, neighborhood: null });
   const [loading, setLoading] = useState(false);
+  // True when the selected country has no province-level zones (e.g. Argentina/CABA)
+  const [skipProvince, setSkipProvince] = useState(false);
 
   useEffect(() => {
     fetchZones('country').then(setCountries);
@@ -44,8 +46,17 @@ export function GeoSelector({ value, onChange }: Props) {
   async function selectCountry(zone: GeoZone) {
     setSelection({ country: zone, province: null, city: null, neighborhood: null });
     setProvinces([]); setCities([]); setNeighborhoods([]);
+    setSkipProvince(false);
+
     const provs = await fetchZones('province', zone.id);
-    setProvinces(provs);
+    if (provs.length === 0) {
+      // Country has no province tier (e.g. Argentina → CABA is a city directly under country)
+      setSkipProvince(true);
+      const cs = await fetchZones('city', zone.id);
+      setCities(cs);
+    } else {
+      setProvinces(provs);
+    }
   }
 
   async function selectProvince(zone: GeoZone) {
@@ -76,7 +87,8 @@ export function GeoSelector({ value, onChange }: Props) {
         onSelect={selectCountry}
         disabled={loading && !countries.length}
       />
-      {selection.country && (
+      {/* Province tier — skipped when country has no province-level children */}
+      {selection.country && !skipProvince && (
         <GeoDropdown
           label="Province / State"
           options={provinces}
@@ -85,7 +97,8 @@ export function GeoSelector({ value, onChange }: Props) {
           disabled={loading && !provinces.length}
         />
       )}
-      {selection.province && (
+      {/* City tier — appears after province OR directly after country when province is skipped */}
+      {(selection.province || (selection.country && skipProvince)) && (
         <GeoDropdown
           label="City"
           options={cities}
@@ -138,7 +151,7 @@ function GeoDropdown({ label, options, selected, onSelect, disabled }: {
       </button>
 
       {open && options.length > 0 && (
-        <div className="absolute z-50 w-full mt-1 border border-border bg-background shadow-md max-h-60 overflow-auto" role="listbox" aria-label={label}>
+        <div className="absolute z-50 w-full mt-1 border border-border bg-background max-h-60 overflow-auto" role="listbox" aria-label={label}>
           {options.map((zone) => (
             <button
               key={zone.id}

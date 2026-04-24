@@ -15,7 +15,16 @@
       "Bash(node_modules/.bin/tsx --version)",
       "Bash(node_modules/.bin/tsx --no-deprecation -e \"import\\('./packages/geo/src/index.ts'\\).then\\(m => console.log\\('geo exports:', Object.keys\\(m\\)\\)\\).catch\\(e => console.error\\(e.message\\)\\)\")",
       "Bash(node_modules/.bin/tsx --no-deprecation packages/geo/src/index.ts)",
-      "Bash(node_modules/.bin/tsx --no-deprecation -e ' *)"
+      "Bash(node_modules/.bin/tsx --no-deprecation -e ' *)",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\mauri\\\\\\\\Desktop\\\\\\\\proyecto-democratia\\\\\\\\apps\\\\\\\\web\\\\\\\\components\\\\\\\\ui *)",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\mauri\\\\\\\\Desktop\\\\\\\\proyecto-democratia\\\\\\\\apps\\\\\\\\web\\\\\\\\components *)",
+      "Bash(find \"C:\\\\\\\\Users\\\\\\\\mauri\\\\\\\\Desktop\\\\\\\\proyecto-democratia\\\\\\\\apps\\\\\\\\web\\\\\\\\components\" -type d)",
+      "Bash(find C:\\\\\\\\Users\\\\\\\\mauri\\\\\\\\Desktop\\\\\\\\proyecto-democratia\\\\\\\\apps\\\\\\\\web\\\\\\\\components\\\\\\\\layout *)",
+      "Read(//c/Users/mauri/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.5.0/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python3 scripts/search.py \"search autocomplete geographic hierarchy dropdown combobox\" --domain ux -n 8)",
+      "mcp__ide__getDiagnostics",
+      "Bash(pnpm --filter @democratia/web exec tsc --noEmit)",
+      "Bash(xargs grep *)"
     ]
   }
 }

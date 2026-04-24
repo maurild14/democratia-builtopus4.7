@@ -66,6 +66,7 @@ export default async function ProfilePage() {
           primaryZone={primaryZone ? { name: primaryZone.name, level: primaryZone.level, id: profile.primary_zone_id! } : null}
           secondaryZones={secondaryZones}
           zoneChangedAt={profile.zone_changed_at}
+          userId={profile.id}
         />
 
         <Separator />

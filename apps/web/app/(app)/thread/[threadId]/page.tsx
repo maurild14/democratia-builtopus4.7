@@ -6,7 +6,6 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { PipelineProgress } from '@/components/pipeline-progress';
-import { ThreadVoteClient } from './thread-vote-client';
 import { CommentSection } from './comment-section';
 import { formatRelativeTime } from '@/lib/utils';
 import type { DeliberationStage } from '@democratia/db';
@@ -83,10 +82,9 @@ export default async function ThreadPage({ params }: Props) {
     .from('comments')
     .select('id, author_id, parent_id, depth, reply_to_pseudonym, body, vote_agree, vote_disagree, vote_pass, created_at')
     .eq('thread_id', threadId)
-    .is('parent_id', null)
     .neq('moderation_status', 'removed')
     .order('created_at', { ascending: true })
-    .limit(50);
+    .limit(200);
 
   const commentList = (commentRows ?? []) as CommentRow[];
   const commentAuthorIds = [...new Set(commentList.map((c) => c.author_id).filter((id): id is string => !!id))];
@@ -105,15 +103,19 @@ export default async function ThreadPage({ params }: Props) {
       : null,
   }));
 
-  const { data: userVote } = profile
-    ? await supabase
-        .from('votes')
-        .select('value')
-        .eq('user_id', profile.id)
-        .eq('target_type', 'thread')
-        .eq('target_id', threadId)
-        .single()
-    : { data: null };
+  const userCommentVotesMap: Record<string, 'agree' | 'disagree' | 'pass'> = {};
+  if (profile && commentList.length) {
+    const commentIds = commentList.map((c) => c.id);
+    const { data: cvotes } = await supabase
+      .from('votes')
+      .select('target_id, value')
+      .eq('user_id', profile.id)
+      .eq('target_type', 'comment')
+      .in('target_id', commentIds);
+    for (const v of cvotes ?? []) {
+      userCommentVotesMap[v.target_id] = v.value as 'agree' | 'disagree' | 'pass';
+    }
+  }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
@@ -170,16 +172,6 @@ export default async function ThreadPage({ params }: Props) {
           </div>
         )}
 
-        <Card className="card-editorial p-5">
-          <ThreadVoteClient
-            threadId={threadId}
-            initialAgree={thread.vote_agree}
-            initialDisagree={thread.vote_disagree}
-            initialPass={thread.vote_pass}
-            initialUserVote={userVote?.value as 'agree' | 'disagree' | 'pass' | undefined}
-            isAuthenticated={!!profile}
-          />
-        </Card>
       </article>
 
       <Separator className="my-8" />
@@ -193,6 +185,7 @@ export default async function ThreadPage({ params }: Props) {
           initialComments={commentsWithPseudonym}
           profile={profile ? { id: profile.id, pseudonym: profile.pseudonym } : null}
           isLocked={thread.is_deliberation}
+          userCommentVotes={userCommentVotesMap}
         />
       </section>
     </div>
